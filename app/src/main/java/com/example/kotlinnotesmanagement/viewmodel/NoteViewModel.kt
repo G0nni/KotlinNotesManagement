@@ -2,14 +2,14 @@ package com.example.kotlinnotesmanagement.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlinnotesmanagement.data.database.NoteDatabaseHelper
+import com.example.kotlinnotesmanagement.data.database.DatabaseHelper
 import com.example.kotlinnotesmanagement.data.model.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class NoteViewModel(private val noteDatabaseHelper: NoteDatabaseHelper) : ViewModel() {
+class NoteViewModel(private val noteDatabaseHelper: DatabaseHelper) : ViewModel() {
 
     val notes = MutableLiveData<List<Note>>()
 
