@@ -92,6 +92,38 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return notesList
     }
 
+    @SuppressLint("Range")
+    fun getNoteById(noteId: String): Note? {
+        val db = this.readableDatabase
+        val cursor: Cursor = db.rawQuery("SELECT * FROM $NOTE_TABLE_NAME WHERE $NOTE_COLUMN_ID=?", arrayOf(noteId))
+
+        var note: Note? = null
+        if (cursor.moveToFirst()) {
+            val id = cursor.getString(cursor.getColumnIndex(NOTE_COLUMN_ID))
+            val title = cursor.getString(cursor.getColumnIndex(NOTE_COLUMN_TITLE))
+            val content = cursor.getString(cursor.getColumnIndex(NOTE_COLUMN_CONTENT))
+            val categories = cursor.getString(cursor.getColumnIndex(NOTE_COLUMN_CATEGORIES)).split(",") // Convert the string back to a list
+            val creationDate = Date(cursor.getLong(cursor.getColumnIndex(NOTE_COLUMN_CREATION_DATE)))
+            val lastModifiedDate = Date(cursor.getLong(cursor.getColumnIndex(NOTE_COLUMN_LAST_MODIFIED_DATE)))
+            note = Note(id, title, content, categories, creationDate, lastModifiedDate)
+        }
+        cursor.close()
+        db.close()
+        return note
+    }
+
+    fun updateNote(note: Note) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(NOTE_COLUMN_ID, note.id)
+        values.put(NOTE_COLUMN_TITLE, note.title)
+        values.put(NOTE_COLUMN_CONTENT, note.content)
+        values.put(NOTE_COLUMN_CATEGORIES, note.categories.joinToString(",")) // Convert the list to a string
+        values.put(NOTE_COLUMN_LAST_MODIFIED_DATE, note.lastModifiedDate.time)
+        db.update(NOTE_TABLE_NAME, values, "$NOTE_COLUMN_ID=?", arrayOf(note.id))
+        db.close()
+    }
+
     fun deleteNote(note: Note) {
         val db = this.writableDatabase
         db.delete(NOTE_TABLE_NAME, "$NOTE_COLUMN_ID=?", arrayOf(note.id))

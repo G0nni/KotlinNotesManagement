@@ -1,5 +1,6 @@
 package com.example.kotlinnotesmanagement.ui.NoteCard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,11 +18,12 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlinnotesmanagement.data.model.Note
 
 @Composable
-fun NoteCard(note: Note, onDelete: (Note) -> Unit) {
+fun NoteCard(note: Note, onDelete: (Note) -> Unit, onNoteClick: (Note) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 8.dp)
+            .clickable { onNoteClick(note) }
     ) {
         Column(
             modifier = Modifier
@@ -40,7 +42,7 @@ fun NoteCard(note: Note, onDelete: (Note) -> Unit) {
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = note.content)
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { onDelete(note) },

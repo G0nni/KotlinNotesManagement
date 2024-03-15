@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -24,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinnotesmanagement.data.database.DatabaseHelper
@@ -68,11 +70,10 @@ class MainActivity : ComponentActivity() {
         var expanded by remember { mutableStateOf(false) }
 
         val noteCategories = listOf("Toutes") + NoteCategory.values().map { it.label }
-
+        val context = LocalContext.current
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxSize()
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -127,9 +128,13 @@ class MainActivity : ComponentActivity() {
                     if (selectedCategory == "Toutes") notes
                     else notes.filter { it.categories.contains(selectedCategory) }
                 ) { note ->
-                    NoteCard(note) { noteToDelete ->
+                    NoteCard(note, onDelete = { noteToDelete ->
                         noteViewModel.DeleteNote(noteToDelete)
-                    }
+                    }, onNoteClick = { clickedNote ->
+                        val intent = Intent(context, NoteDetailActivity::class.java)
+                        intent.putExtra("note_id", clickedNote.id)
+                        context.startActivity(intent)
+                    })
                 }
             }
         }
@@ -141,4 +146,5 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
 
     }
+
 }

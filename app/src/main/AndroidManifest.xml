@@ -32,6 +32,12 @@
             android:theme="@style/Theme.KotlinNotesManagement" />
 
         <activity
+            android:name=".NoteDetailActivity"
+            android:exported="false"
+            android:label="kotlinNotesManagement"
+            android:theme="@style/Theme.KotlinNotesManagement" />
+
+        <activity
             android:name=".AddNoteActivity"
             android:exported="false"
             android:label="kotlinNotesManagement"
